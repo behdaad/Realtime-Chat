@@ -1,0 +1,19 @@
+{
+  "name": "wp_p3",
+  "version": "1.0.0",
+  "description": "Web Programming Project 3",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "socket.io",
+    "node.js"
+  ],
+  "author": "Behdad Keynejad & Shaghayegh Esmaeili",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.0",
+    "socket.io": "^1.3.5"
+  }
+}
