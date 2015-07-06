@@ -1,10 +1,47 @@
+var socket = io();
+var username;
+
+$('#login_form').submit(function()
+{
+    username = $('#username').val();
+    if (username !== "")
+    {
+        socket.emit('login', username);
+        $('.ui.modal').modal('hide');
+        $('#welcome_username').text(username);
+    }
+    return false;
+});
+
+$('.ui.modal').modal({
+    blurring: true,
+    closable: false,
+    onApprove: function()
+    {
+        $('#login_form').submit();
+    },
+}).modal('show');
+
+socket.on('friends', function(friends, is_online)
+{
+    for (f in friends)
+    {
+        console.log(f.username + ' ' + f.is_online);
+    }
+});
+
+$('#add_friend_form').submit(function()
+{
+    socket.emit('add friend', username, $('#add_friend').val());
+    $('#add_friend').val('')
+    return false;
+});
+
 $('#send_button').click(function()
 {
     $('#messages_form').submit();
 });
 
-var socket = io();
-// console.log("script executed");
 $('#messages_form').submit(function()
 {
     // console.log("form submitted");
@@ -18,24 +55,3 @@ socket.on('chat message', function(message)
     // $('#messages').append($('<li>').text(message));
     alert('chat message received' + message);
 });
-
-$('#login_form').submit(function()
-{
-    // alert('login form submitted');
-    socket.emit('login', $('#username').val())
-    $('.ui.modal').modal('hide');
-    return false;
-});
-
-$('.ui.modal').modal(
-    {
-        blurring: true,
-        closable: false,
-        onApprove: function()
-        {
-            $('#login_form').submit();
-            // socket.emit('login', $('#username').val());
-            // alert('what?');
-        },
-    })
-    .modal('show');

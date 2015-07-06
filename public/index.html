@@ -14,17 +14,19 @@
                 <h2 class="ui icon center aligned header">
                     <img src="static/avatars/5.jpg" class="ui circular image">
                     <div class="content">
-                        Welcome, Jane Doe!
-                        <div class="sub header">@janedoe</div>
+                        Welcome, @<span id="welcome_username"></span>
+                        <!-- <div class="sub header">@janedoe</div> -->
                     </div>
                 </h2>
             </div>
             <div class="ui vertical menu left" id="roster">
                 <div class="item">
-                    <div class="ui transparent icon input">
-                        <input type="text" placeholder="Add a friend...">
-                        <i class="user icon"></i>
-                    </div>
+                    <form id="add_friend_form">
+                        <div class="ui transparent icon input">
+                            <input id="add_friend" type="text" placeholder="Add a friend...">
+                            <!-- <i class="user icon"></i> -->
+                        </div>
+                    </form>
                 </div>
                 <a class="active green item">sadjad</a>
                 <a class="active green item">janedoe<div class="ui blue label">1</div></a>
@@ -37,7 +39,8 @@
             <div id="message-header">
                 <h2 class="ui header">
                     <i class="comments icon"></i>
-                    <div class="content"> Conversation with @sadjad
+                    <div class="content">
+                        Conversation with @sadjad
                         <div class="sub header">Online</div>
                     </div>
                 </h2>
