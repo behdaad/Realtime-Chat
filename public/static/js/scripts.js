@@ -22,12 +22,14 @@ $('.ui.modal').modal({
     },
 }).modal('show');
 
-socket.on('friends', function(friends, is_online)
+socket.on('friends', function(friends)
 {
-    for (f in friends)
-    {
-        console.log(f.username + ' ' + f.is_online);
-    }
+    console.log("fffff");
+    console.log(friends[0]);
+    // for (f of friends)
+    // {
+    //     console.log(f.username + ' ' + f.is_online);
+    // }
 });
 
 $('#add_friend_form').submit(function()

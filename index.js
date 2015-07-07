@@ -6,40 +6,34 @@ var server = http.Server(app)
 
 var io = require('socket.io')(server);
 
-var sockets = {}; // User: socket
-// var online = {};  // str(username): boolean
-// var friends = {}; // str(username): array
+var users = [];
 
-var User = function(username_)
+var User = function(username, socket)
 {
-    this.username = username_;
+    this.username = username;
     this.is_online = true;
     this.friends = [];
+    this.socket = socket;
 };
 
-function find_user(username) // receives username, returns User
+function find_user(username, array) // receives username, returns User
 {
-    for (key in sockets)
-        if (key.username === username)
-            return key; // type: User
+    for (user of array)
+        if (user.username === username)
+            return user; // type: User
 
-    return undefined;
+    return null;
 }
 
-function reverse_lookup(dict, socket)
-{
-    for (key in dict)
-    {
-        // console.log('key and type in reverese lookup:');
-        // console.log(key);
-        // console.log(typeof(key));
-        if (dict[key] === socket)
-        {
-            return key; // type: User
-        }
-    }
+// function 
 
-    return undefined;
+function already_added(adder, addee)
+{
+    console.log(adder.username);
+    for (friend of adder.friends)
+        if (friend === addee)
+            return true;
+    return false;
 }
 
 app.get('/', function(req, res)
@@ -53,28 +47,26 @@ io.on('connection', function(socket)
 {
     socket.on('login', function(username)
     {
-        var current_user = find_user(username);
-        // console.log(current_user);
-        if (sockets[current_user] === undefined)
+        var user = find_user(username, users);
+        if (user === null)
         {
-            current_user = new User(username);
-            sockets[current_user] = socket;
-            // console.log(username + ' created');
-            console.log(current_user.username);
+            user = new User(username, socket);
+            users.push(user);
         }
+        else
+            user.socket = socket;
 
-        current_user.is_online = true;
-        // console.log(username + " signed in.");
-
-        socket.emit('friends', current_user.friends);
+        console.log(user.friends);
+        socket.emit('friends', user.friends);
     });
 
     socket.on('add friend', function(adder, addee)
     {
-        var adder_user = find_user(adder);
-        var addee_user = find_user(addee);
-        if (addee !== undefined)
-            current_user.friends.push(find_user(addee));
+        var adder_user = find_user(adder, users);
+        var addee_user = find_user(addee, users);
+
+        if (addee_user !== null && !already_added(adder_user, addee_user))
+            adder_user.friends.push(addee_user);
     });
 
     socket.on('chat message', function(message)
@@ -85,13 +77,14 @@ io.on('connection', function(socket)
 
     socket.on('disconnect', function()
     {
-        var user = reverse_lookup(sockets, socket);
-        // console.log(user);
-        if (user !== undefined)
+        for (user of users)
         {
-            user.is_online = false;
-            // console.log('sign out');
-            // console.log(user.username);
+            if (user.socket === socket)
+            {
+                user.is_online = false;
+                user.socket = undefined;
+                return;
+            }
         }
     });
 });
