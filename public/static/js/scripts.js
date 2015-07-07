@@ -25,11 +25,11 @@ $('.ui.modal').modal({
 socket.on('friends', function(friends)
 {
     console.log("fffff");
-    console.log(friends[0]);
-    // for (f of friends)
-    // {
-    //     console.log(f.username + ' ' + f.is_online);
-    // }
+    // console.log(friends[0]);
+    for (f of friends)
+    {
+        console.log(f[0] + ' (' + f[1] + ')');
+    }
 });
 
 $('#add_friend_form').submit(function()

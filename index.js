@@ -25,7 +25,14 @@ function find_user(username, array) // receives username, returns User
     return null;
 }
 
-// function 
+function emit_friends(friends)
+{
+    returnee = [];
+    for (friend of friends)
+        returnee.push([friend.username, friend.is_online]);
+
+    return returnee;
+}
 
 function already_added(adder, addee)
 {
@@ -57,7 +64,9 @@ io.on('connection', function(socket)
             user.socket = socket;
 
         console.log(user.friends);
-        socket.emit('friends', user.friends);
+        var temp = emit_friends(user.friends);
+        console.log(temp);
+        socket.emit('friends', emit_friends(user.friends));
     });
 
     socket.on('add friend', function(adder, addee)
