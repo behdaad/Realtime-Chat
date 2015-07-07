@@ -36,7 +36,7 @@ function emit_friends(friends)
 
 function already_added(adder, addee)
 {
-    console.log(adder.username);
+    // console.log(adder.username);
     for (friend of adder.friends)
         if (friend === addee)
             return true;
@@ -63,9 +63,9 @@ io.on('connection', function(socket)
         else
             user.socket = socket;
 
-        console.log(user.friends);
+        // console.log(user.friends);
         var temp = emit_friends(user.friends);
-        console.log(temp);
+        // console.log(temp);
         socket.emit('friends', emit_friends(user.friends));
     });
 
@@ -76,6 +76,8 @@ io.on('connection', function(socket)
 
         if (addee_user !== null && !already_added(adder_user, addee_user))
             adder_user.friends.push(addee_user);
+
+        socket.emit('is online', addee_user.is_online, addee_user.username)
     });
 
     socket.on('chat message', function(message)

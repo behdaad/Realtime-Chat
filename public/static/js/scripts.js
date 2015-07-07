@@ -22,13 +22,27 @@ $('.ui.modal').modal({
     },
 }).modal('show');
 
-socket.on('friends', function(friends)
+socket.on('friends', function(friends) // friend[0]: username, friend[1]: is_online
 {
-    console.log("fffff");
+    // console.log("fffff");
     // console.log(friends[0]);
     for (f of friends)
     {
-        console.log(f[0] + ' (' + f[1] + ')');
+        // console.log(f[0] + ' (' + f[1] + ')');
+        if (f[1]) // is online
+        {
+            $('#roster').append($('<a>', {
+                text: f[0],
+                class: "active green item",
+            }));
+        }
+        else
+        {
+            $('#roster').append($('<a>', {
+                text: f[0],
+                class: "blue item",
+            }));
+        }
     }
 });
 
@@ -36,7 +50,26 @@ $('#add_friend_form').submit(function()
 {
     socket.emit('add friend', username, $('#add_friend').val());
     $('#add_friend').val('')
+
     return false;
+});
+
+socket.on('is online', function(is_online, username)
+{
+    if (is_online) // is online
+    {
+        $('#roster').append($('<a>', {
+            text: username,
+            class: "active green item",
+        }));
+    }
+    else
+    {
+        $('#roster').append($('<a>', {
+            text: username,
+            class: "blue item",
+        }));
+    }
 });
 
 $('#send_button').click(function()
