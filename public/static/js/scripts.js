@@ -95,12 +95,12 @@ function user_clicked(username)
 socket.on('answer online', function(username, is_online)
 {
     if (username === target_user)
-        target_user_is_online = is_online;
+    target_user_is_online = is_online;
 
     if (is_online === false)
-        $('#message_input').prop('disabled', true);
+    $('#message_input').prop('disabled', true);
     else
-        $('#message_input').prop('disabled', false);
+    $('#message_input').prop('disabled', false);
 });
 
 $('#send_button').click(function()
@@ -155,56 +155,56 @@ function addComment(username, message) {
   $('#message_add').append(
     '<div class="comment">' +
         '<a class="avatar">' +
-          '<img src="static/avatars/5.jpg">' +
+        '<img src="static/avatars/5.jpg">' +
         '</a>' +
-      '<div class="content">' +
-          '<a class="author">' +
-            newMessage.getUsername() +
-            '</a>' +
-          '<div class="metadata">' +
-              '<span class="date">' +
-              newMessage.getDateAndTime() +
-              '</span>' +
-          '</div>' +
-          '<div class="text">' +
-            newMessage.getMessageString()+
-          '</div>' +
-      '</div>' +
-  '</div>'
-  );
+        '<div class="content">' +
+        '<a class="author">' +
+        newMessage.getUsername() +
+        '</a>' +
+        '<div class="metadata">' +
+        '<span class="date">' +
+        newMessage.getDateAndTime() +
+        '</span>' +
+        '</div>' +
+        '<div class="text">' +
+        newMessage.getMessageString()+
+        '</div>' +
+        '</div>' +
+        '</div>'
+    );
 }
 
 //Written By Shaghayegh
 function clearMessagesList() {
-  $('#message_add').empty();
+    $('#message_add').empty();
 }
 
 //Written By Shaghayegh
 function addMessagesList(messagesList) {
-  clearMessagesList();
-  var index;
-  for	(index = 0; index < messagesList.length; index++) {
-    $('#message_add').append(
-      '<div class="comment">' +
-          '<a class="avatar">' +
+    clearMessagesList();
+    var index;
+    for	(index = 0; index < messagesList.length; index++) {
+        $('#message_add').append(
+            '<div class="comment">' +
+            '<a class="avatar">' +
             '<img src="static/avatars/5.jpg">' +
-          '</a>' +
-        '<div class="content">' +
+            '</a>' +
+            '<div class="content">' +
             '<a class="author">' +
-              messagesList[index].getUsername() +
-              '</a>' +
+            messagesList[index].getUsername() +
+            '</a>' +
             '<div class="metadata">' +
-                '<span class="date">' +
-                  messagesList[index].getDateAndTime() +
-                '</span>' +
+            '<span class="date">' +
+            messagesList[index].getDateAndTime() +
+            '</span>' +
             '</div>' +
             '<div class="text">' +
             messagesList[index].getMessageString() +
             '</div>' +
-        '</div>' +
-    '</div>'
-    );
-  }
+            '</div>' +
+            '</div>'
+        );
+    }
 }
 
 //Written By Shaghayegh
