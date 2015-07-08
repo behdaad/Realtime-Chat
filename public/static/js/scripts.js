@@ -35,16 +35,18 @@ socket.on('friends', function(friends) // friend[0]: username, friend[1]: is_onl
         {
             $('#online_users').prepend($('<a>', {
                 text: f[0],
+                id: f[0],
                 class: "online item",
-                onclick: "user_clicked(" + f[0] + ")"
+                onclick: "user_clicked('" + f[0] + "')"
             }));
         }
         else
         {
             $('#offline_users').prepend($('<a>', {
                 text: f[0],
+                id: f[0],
                 class: "offline item",
-                onclick: "user_clicked(" + f[0] + ")"
+                onclick: "user_clicked('" + f[0] + "')"
             }));
         }
     }
@@ -64,24 +66,30 @@ socket.on('is online', function(is_online, username)
     {
         $('#online_users').prepend($('<a>', {
             text: username,
+            id: username,
             class: "online item",
-            onclick: "user_clicked(" + username + ")"
+            onclick: "user_clicked('" + username + "')"
         }));
     }
     else
     {
         $('#offline_users').prepend($('<a>', {
             text: username,
+            id: username,
             class: "offline item",
-            onclick: "user_clicked(" + username + ")"
+            onclick: "user_clicked('" + username + "')"
         }));
     }
 });
 
 function user_clicked(username)
 {
+    console.log('user clicked');
+    $('.active').removeClass('active');
+    $('#' + username).addClass('active');
     target_user = username;
     socket.emit('question online', username);
+
 }
 
 socket.on('answer online', function(username, is_online)
@@ -140,7 +148,7 @@ function addComment(username, message) {
     min = "0" + min;
   }
 
-  var messageTime = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][date.getDay()] +
+  var messageTime = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][date.getDay()] +
   " at " + curr_hour + ":" + min + a_p;
   var newMessage = new Message(username, messageTime, message);
 
