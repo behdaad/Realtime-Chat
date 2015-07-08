@@ -36,7 +36,7 @@ function emit_friends(friends)
 
 function already_added(adder, addee)
 {
-    // console.log(adder.username);
+    // debug: check this method
     for (friend of adder.friends)
         if (friend === addee)
             return true;
@@ -78,6 +78,13 @@ io.on('connection', function(socket)
             adder_user.friends.push(addee_user);
 
         socket.emit('is online', addee_user.is_online, addee_user.username)
+    });
+
+    socket.on('question online', function(username)
+    {
+        user = find_user(username, users);
+        if (user !== null)
+            socket.emit('answer online', username, user.is_online);
     });
 
     socket.on('chat message', function(message)
