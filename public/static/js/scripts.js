@@ -111,6 +111,12 @@ function addComment(username, message) {
      curr_hour = curr_hour - 12;
   }
 
+  var min = date.getMinutes();
+  min = '' + min;
+  if (min.length < 2) {
+    min = "0" + min;
+  }
+
   $('#message_add').append(
     '<div class="comment">' +
         '<a class="avatar">' +
@@ -123,7 +129,7 @@ function addComment(username, message) {
           '<div class="metadata">' +
               '<span class="date">' +
                 ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][date.getDay()] +
-                " at " + curr_hour + ":" + date.getMinutes() + a_p +
+                " at " + curr_hour + ":" + min + a_p +
               '</span>' +
           '</div>' +
           '<div class="text">' +
