@@ -103,8 +103,10 @@ $('#send_button').click(function()
 $('#messages_form').submit(function()
 {
     // console.log("form submitted");
+    var message = $('#message_input').val();
     socket.emit('chat message', $('#message_input').val());
     $('#message_input').val('');
+    addComment(username, message);
     return false;
 });
 
@@ -113,3 +115,105 @@ socket.on('chat message', function(message)
     // $('#messages').append($('<li>').text(message));
     alert('chat message received' + message);
 });
+
+//Written By Shaghayegh
+function addComment(username, message) {
+  var date = new Date(); //$.now()
+  var curr_hour = date.getHours();
+
+  if (curr_hour < 12) {
+    a_p = "AM";
+  }
+  else {
+    a_p = "PM";
+  }
+  if (curr_hour == 0) {
+    curr_hour = 12;
+  }
+  if (curr_hour > 12){
+     curr_hour = curr_hour - 12;
+  }
+
+  var min = date.getMinutes();
+  min = '' + min;
+  if (min.length < 2) {
+    min = "0" + min;
+  }
+
+  var messageTime = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][date.getDay()] +
+  " at " + curr_hour + ":" + min + a_p;
+  var newMessage = new Message(username, messageTime, message);
+
+  $('#message_add').append(
+    '<div class="comment">' +
+        '<a class="avatar">' +
+          '<img src="static/avatars/5.jpg">' +
+        '</a>' +
+      '<div class="content">' +
+          '<a class="author">' +
+            newMessage.getUsername() +
+            '</a>' +
+          '<div class="metadata">' +
+              '<span class="date">' +
+              newMessage.getDateAndTime() +
+              '</span>' +
+          '</div>' +
+          '<div class="text">' +
+            newMessage.getMessageString()+
+          '</div>' +
+      '</div>' +
+  '</div>'
+  );
+}
+
+//Written By Shaghayegh
+function clearMessagesList() {
+  $('#message_add').empty();
+}
+
+//Written By Shaghayegh
+function addMessagesList(messagesList) {
+  clearMessagesList();
+  var index;
+  for	(index = 0; index < messagesList.length; index++) {
+    $('#message_add').append(
+      '<div class="comment">' +
+          '<a class="avatar">' +
+            '<img src="static/avatars/5.jpg">' +
+          '</a>' +
+        '<div class="content">' +
+            '<a class="author">' +
+              messagesList[index].getUsername() +
+              '</a>' +
+            '<div class="metadata">' +
+                '<span class="date">' +
+                  messagesList[index].getDateAndTime() +
+                '</span>' +
+            '</div>' +
+            '<div class="text">' +
+            messagesList[index].getMessageString() +
+            '</div>' +
+        '</div>' +
+    '</div>'
+    );
+  }
+}
+
+//Written By Shaghayegh
+var Message = function(username, messageTime, messageString) {
+    this.username = username;
+    this.messageTime = messageTime;
+    this.messageString = messageString;
+
+    this.getUsername = function () {
+        return this.username;
+    }
+
+    this.getDateAndTime = function () {
+        return this.messageTime;
+    }
+
+    this.getMessageString = function () {
+        return this.messageString;
+    }
+}
