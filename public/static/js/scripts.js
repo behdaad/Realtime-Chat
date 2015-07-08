@@ -80,8 +80,10 @@ $('#send_button').click(function()
 $('#messages_form').submit(function()
 {
     // console.log("form submitted");
+    var message = $('#message_input').val();
     socket.emit('chat message', $('#message_input').val());
     $('#message_input').val('');
+    addComment(username, message);
     return false;
 });
 
@@ -90,3 +92,44 @@ socket.on('chat message', function(message)
     // $('#messages').append($('<li>').text(message));
     alert('chat message received' + message);
 });
+
+//Written By Shaghayegh
+function addComment(username, message) {
+  var date = new Date(); //$.now()
+  var curr_hour = date.getHours();
+
+  if (curr_hour < 12) {
+    a_p = "AM";
+  }
+  else {
+    a_p = "PM";
+  }
+  if (curr_hour == 0) {
+    curr_hour = 12;
+  }
+  if (curr_hour > 12){
+     curr_hour = curr_hour - 12;
+  }
+
+  $('#message_add').append(
+    '<div class="comment">' +
+        '<a class="avatar">' +
+          '<img src="static/avatars/5.jpg">' +
+        '</a>' +
+      '<div class="content">' +
+          '<a class="author">' +
+            username +
+            '</a>' +
+          '<div class="metadata">' +
+              '<span class="date">' +
+                ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][date.getDay()] +
+                " at " + curr_hour + ":" + date.getMinutes() + a_p +
+              '</span>' +
+          '</div>' +
+          '<div class="text">' +
+          message +
+          '</div>' +
+      '</div>' +
+  '</div>'
+  );
+}
