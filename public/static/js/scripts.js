@@ -139,3 +139,46 @@ function addComment(username, message) {
   '</div>'
   );
 }
+
+//Written By Shaghayegh
+function clearMessagesList() {
+  $('#message_add').empty();
+}
+
+//Written By Shaghayegh
+function addMessagesList(messagesList) {
+  clearMessagesList();
+  var index;
+  for	(index = 0; index < messagesList.length; index++) {
+    $('#message_add').append(
+      '<div class="comment">' +
+          '<a class="avatar">' +
+            '<img src="static/avatars/5.jpg">' +
+          '</a>' +
+        '<div class="content">' +
+            '<a class="author">' +
+              messagesList[index].getUsername() +
+              '</a>' +
+            '<div class="metadata">' +
+                '<span class="date">' +
+                  messagesList[index].getDateAndTime() +
+                '</span>' +
+            '</div>' +
+            '<div class="text">' +
+            messagesList[index] +
+            '</div>' +
+        '</div>' +
+    '</div>'
+    );
+  }
+}
+
+//TODO
+function getUsername() {
+  // body...
+}
+
+//TODO
+function getDateAndTime() {
+  // body...
+}
