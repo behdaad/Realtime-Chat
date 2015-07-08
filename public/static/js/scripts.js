@@ -117,6 +117,10 @@ function addComment(username, message) {
     min = "0" + min;
   }
 
+  var messageTime = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][date.getDay()] +
+  " at " + curr_hour + ":" + min + a_p;
+  var newMessage = new Message(username, messageTime, message);
+
   $('#message_add').append(
     '<div class="comment">' +
         '<a class="avatar">' +
@@ -124,16 +128,15 @@ function addComment(username, message) {
         '</a>' +
       '<div class="content">' +
           '<a class="author">' +
-            username +
+            newMessage.getUsername() +
             '</a>' +
           '<div class="metadata">' +
               '<span class="date">' +
-                ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][date.getDay()] +
-                " at " + curr_hour + ":" + min + a_p +
+              newMessage.getDateAndTime() +
               '</span>' +
           '</div>' +
           '<div class="text">' +
-          message +
+            newMessage.getMessageString()+
           '</div>' +
       '</div>' +
   '</div>'
@@ -165,7 +168,7 @@ function addMessagesList(messagesList) {
                 '</span>' +
             '</div>' +
             '<div class="text">' +
-            messagesList[index] +
+            messagesList[index].getMessageString() +
             '</div>' +
         '</div>' +
     '</div>'
@@ -173,12 +176,21 @@ function addMessagesList(messagesList) {
   }
 }
 
-//TODO
-function getUsername() {
-  // body...
-}
+//Written By Shaghayegh
+var Message = function(username, messageTime, messageString) {
+    this.username = username;
+    this.messageTime = messageTime;
+    this.messageString = messageString;
 
-//TODO
-function getDateAndTime() {
-  // body...
+    this.getUsername = function () {
+        return this.username;
+    }
+
+    this.getDateAndTime = function () {
+        return this.messageTime;
+    }
+
+    this.getMessageString = function () {
+        return this.messageString;
+    }
 }
