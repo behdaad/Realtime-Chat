@@ -2,6 +2,7 @@ var socket = io();
 var username;
 var message_target;
 var target_user_is_online;
+var dict = {};
 
 $('#login_form').submit(function()
 {
@@ -33,6 +34,7 @@ socket.on('friends', function(friends) // friend[0]: username, friend[1]: is_onl
         console.log(f[0] + ' (' + f[1] + ')');
         if (f[1]) // is online
         {
+            dict[f[0]] = new Array();
             $('#online_users').prepend($('<a>', {
                 text: f[0],
                 id: f[0],
@@ -42,6 +44,7 @@ socket.on('friends', function(friends) // friend[0]: username, friend[1]: is_onl
         }
         else
         {
+            dict[f[0]] = new Array();
             $('#offline_users').prepend($('<a>', {
                 text: f[0],
                 id: f[0],
@@ -64,6 +67,7 @@ socket.on('is online', function(is_online, username)
 {
     if (is_online) // is online
     {
+        dict[username] = new Array();
         $('#online_users').prepend($('<a>', {
             text: username,
             id: username,
@@ -73,6 +77,7 @@ socket.on('is online', function(is_online, username)
     }
     else
     {
+        dict[username] = new Array();
         $('#offline_users').prepend($('<a>', {
             text: username,
             id: username,
@@ -87,6 +92,7 @@ function user_clicked(username)
     console.log('user clicked');
     $('.active').removeClass('active');
     $('#' + username).addClass('active');
+    addMessagesList(dict[username]);
     target_user = username;
     socket.emit('question online', username);
 
@@ -118,8 +124,41 @@ $('#messages_form').submit(function()
     return false;
 });
 
-socket.on('chat message', function(message)
+socket.on('chat message', function(sender, message)
 {
+    //dict[message.username].push(message);
+    if(sender === target_user ) {
+      addComment(sender, message);
+    }
+    else {
+      //make it a function
+      var date = new Date(); //$.now()
+      var curr_hour = date.getHours();
+
+      if (curr_hour < 12) {
+        a_p = "AM";
+      }
+      else {
+        a_p = "PM";
+      }
+      if (curr_hour == 0) {
+        curr_hour = 12;
+      }
+      if (curr_hour > 12){
+         curr_hour = curr_hour - 12;
+      }
+
+      var min = date.getMinutes();
+      min = '' + min;
+      if (min.length < 2) {
+        min = "0" + min;
+      }
+
+      var messageTime = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][date.getDay()] +
+      " at " + curr_hour + ":" + min + a_p;
+      var newMessage = new Message(sender, messageTime, message);
+      dict[sender].push(newMessage);
+    }
     // $('#messages').append($('<li>').text(message));
     alert('chat message received' + message);
 });
@@ -151,6 +190,7 @@ function addComment(username, message) {
   var messageTime = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][date.getDay()] +
   " at " + curr_hour + ":" + min + a_p;
   var newMessage = new Message(username, messageTime, message);
+  dict[target_user].push(newMessage);
 
   $('#message_add').append(
     '<div class="comment">' +
