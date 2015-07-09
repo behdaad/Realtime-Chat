@@ -19,8 +19,12 @@ var User = function(username, socket)
 function find_user(username, array) // receives username, returns User
 {
     for (user of array)
+    {
         if (user.username === username)
+        {
             return user; // type: User
+        }
+    }
 
     return null;
 }
@@ -29,7 +33,9 @@ function emit_friends(friends)
 {
     returnee = [];
     for (friend of friends)
+    {
         returnee.push([friend.username, friend.is_online]);
+    }
 
     return returnee;
 }
@@ -38,8 +44,12 @@ function already_added(adder, addee)
 {
     // debug: check this method
     for (friend of adder.friends)
+    {
         if (friend === addee)
+        {
             return true;
+        }
+    }
     return false;
 }
 
@@ -61,7 +71,10 @@ io.on('connection', function(socket)
             users.push(user);
         }
         else
+        {
             user.socket = socket;
+            user.is_online = true;
+        }
 
         // console.log(user.friends);
         var temp = emit_friends(user.friends);
@@ -90,7 +103,9 @@ io.on('connection', function(socket)
         // console.log('question online');
         user = find_user(username, users);
         if (user !== null)
+        {
             socket.emit('answer online', username, user.is_online);
+        }
     });
 
     socket.on('chat message', function(user, target, message)
@@ -101,7 +116,20 @@ io.on('connection', function(socket)
         // console.log(message);
 
         var target_user = find_user(target, users);
-        target_user.socket.emit('chat message', user, message);
+
+        var user_added = false;
+        for (var f of target_user.friends)
+        {
+            if (f.username === user)
+            {
+                user_added = true;
+                break;
+            }
+        }
+        if (user_added && target_user.is_online)
+        {
+            target_user.socket.emit('chat message', user, message);
+        }
     });
 
     socket.on('disconnect', function()

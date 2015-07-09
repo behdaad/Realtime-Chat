@@ -39,7 +39,7 @@ socket.on('friends', function(friends) // friend[0]: username, friend[1]: is_onl
                 text: f[0],
                 id: f[0],
                 class: "online item",
-                onclick: "ed('" + f[0] + "')"
+                onclick: "user_clicked('" + f[0] + "')"
             }));
         }
         else
@@ -49,7 +49,7 @@ socket.on('friends', function(friends) // friend[0]: username, friend[1]: is_onl
                 text: f[0],
                 id: f[0],
                 class: "offline item",
-                onclick: "ed('" + f[0] + "')"
+                onclick: "user_clicked('" + f[0] + "')"
             }));
         }
     }
@@ -72,7 +72,7 @@ socket.on('is online', function(is_online, username)
             text: username,
             id: username,
             class: "online item",
-            onclick: "ed('" + username + "')"
+            onclick: "user_clicked('" + username + "')"
         }));
     }
     else
@@ -82,14 +82,14 @@ socket.on('is online', function(is_online, username)
             text: username,
             id: username,
             class: "offline item",
-            onclick: "ed('" + username + "')"
+            onclick: "user_clicked('" + username + "')"
         }));
     }
 });
 
 function user_clicked(username)
 {
-    // console.log('user clicked');
+    // alert('user clicked')
     $('.active').removeClass('active');
     $('#' + username).addClass('active');
     addMessagesList(dict[username]);
@@ -102,17 +102,27 @@ function user_clicked(username)
 socket.on('answer online', function(username, is_online)
 {
     if (username === target_user)
+    {
         target_user_is_online = is_online;
+    }
 
     if (is_online === false)
     {
+        // alert('khob off e')
         $('#message_input').prop('disabled', true);
-        $('chat_online').text('Offline');
+        $('#send_button').addClass('disabled');
+        $('#chat_online').text('Offline');
+        $('#' + username).removeClass('online');
+        $('#' + username).addClass('offline');
     }
     else
     {
+        // alert('online e baba')
         $('#message_input').prop('disabled', false);
-        $('chat_online').text('Online');
+        $('#send_button').removeClass('disabled');
+        $('#chat_online').text('Online');
+        $('#' + username).removeClass('offline');
+        $('#' + username).addClass('online');
     }
 });
 
@@ -132,41 +142,40 @@ $('#messages_form').submit(function()
 });
 
 socket.on('chat message', function(sender, message)
-
 {
     //dict[message.username].push(message);
     if(sender === target_user ) {
-      addComment(sender, message);
+        addComment(sender, message);
     }
     else {
-      //make it a function
-      var date = new Date(); //$.now()
-      var curr_hour = date.getHours();
+        //make it a function
+        var date = new Date(); //$.now()
+        var curr_hour = date.getHours();
 
-      if (curr_hour < 12) {
-        a_p = "AM";
-      }
-      else {
-        a_p = "PM";
-      }
-      if (curr_hour == 0) {
-        curr_hour = 12;
-      }
-      if (curr_hour > 12){
-         curr_hour = curr_hour - 12;
-      }
+        if (curr_hour < 12) {
+            a_p = "AM";
+        }
+        else {
+            a_p = "PM";
+        }
+        if (curr_hour == 0) {
+            curr_hour = 12;
+        }
+        if (curr_hour > 12){
+            curr_hour = curr_hour - 12;
+        }
 
-      var min = date.getMinutes();
-      min = '' + min;
-      if (min.length < 2) {
-        min = "0" + min;
-      }
+        var min = date.getMinutes();
+        min = '' + min;
+        if (min.length < 2) {
+            min = "0" + min;
+        }
 
-      var messageTime = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][date.getDay()] +
-      " at " + curr_hour + ":" + min + a_p;
-      var newMessage = new Message(sender, messageTime, message);
-      dict[sender].push(newMessage);
-      notify(sender);
+        var messageTime = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][date.getDay()] +
+        " at " + curr_hour + ":" + min + a_p;
+        var newMessage = new Message(sender, messageTime, message);
+        dict[sender].push(newMessage);
+        notify(sender);
     }
     // $('#messages').append($('<li>').text(message));
 });
@@ -178,37 +187,44 @@ socket.on('Error', function(error_message)
 
 //Written By Shaghayegh
 function addComment(username, message) {
-  var date = new Date(); //$.now()
-  var curr_hour = date.getHours();
+    var date = new Date(); //$.now()
+    var curr_hour = date.getHours();
 
-  if (curr_hour < 12) {
-    a_p = "AM";
-  }
-  else {
-    a_p = "PM";
-  }
-  if (curr_hour == 0) {
-    curr_hour = 12;
-  }
-  if (curr_hour > 12){
-     curr_hour = curr_hour - 12;
-  }
+    if (curr_hour < 12) {
+        a_p = "AM";
+    }
+    else {
+        a_p = "PM";
+    }
+    if (curr_hour == 0) {
+        curr_hour = 12;
+    }
+    if (curr_hour > 12){
+        curr_hour = curr_hour - 12;
+    }
 
-  var min = date.getMinutes();
-  min = '' + min;
-  if (min.length < 2) {
-    min = "0" + min;
-  }
+    var min = date.getMinutes();
+    min = '' + min;
+    if (min.length < 2) {
+        min = "0" + min;
+    }
 
-  var messageTime = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][date.getDay()] +
-  " at " + curr_hour + ":" + min + a_p;
-  var newMessage = new Message(username, messageTime, message);
-  dict[target_user].push(newMessage);
-
-  $('#message_add').append(
-    '<div class="comment">' +
+    var messageTime = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][date.getDay()] +
+    " at " + curr_hour + ":" + min + a_p;
+    var newMessage = new Message(username, messageTime, message);
+    dict[target_user].push(newMessage);
+    if (username === target_user)
+    {
+        var avatar = '<img src="static/avatars/5.jpg">';
+    }
+    else
+    {
+        var avatar = '<img src="static/avatars/1.jpg">';
+    }
+    $('#message_add').append(
+        '<div class="comment">' +
         '<a class="avatar">' +
-        '<img src="static/avatars/5.jpg">' +
+        avatar +
         '</a>' +
         '<div class="content">' +
         '<a class="author">' +
@@ -237,10 +253,18 @@ function addMessagesList(messagesList) {
     clearMessagesList();
     var index;
     for	(index = 0; index < messagesList.length; index++) {
+        if (messagesList[index].username === target_user)
+        {
+            var avatar = '<img src="static/avatars/5.jpg">';
+        }
+        else
+        {
+            var avatar = '<img src="static/avatars/1.jpg">';
+        }
         $('#message_add').append(
             '<div class="comment">' +
             '<a class="avatar">' +
-            '<img src="static/avatars/5.jpg">' +
+            avatar +
             '</a>' +
             '<div class="content">' +
             '<a class="author">' +
