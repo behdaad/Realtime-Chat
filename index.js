@@ -94,7 +94,7 @@ io.on('connection', function(socket)
         }
         else
         {
-            socket.emit('Error', 'Error adding user.');
+            socket.emit('Error', 'This username does not exist.');
         }
     });
 

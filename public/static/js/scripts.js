@@ -7,6 +7,7 @@ var dict = {};
 $('#login_form').submit(function()
 {
     username = $('#username').val();
+    //fullname = $('#fullname').val();
     if (username !== "")
     {
         socket.emit('login', username);
