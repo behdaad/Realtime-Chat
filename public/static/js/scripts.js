@@ -107,7 +107,7 @@ socket.on('answer online', function(username, is_online)
     {
         $('#message_input').prop('disabled', false);
         $('chat_online').text('Online');
-    }    
+    }
 });
 
 $('#send_button').click(function()
@@ -128,7 +128,6 @@ $('#messages_form').submit(function()
 socket.on('chat message', function(user, message)
 {
     // $('#messages').append($('<li>').text(message));
-    alert('chat message received from ' + user + ': ' + message);
 });
 
 socket.on('Error', function(error_message)
