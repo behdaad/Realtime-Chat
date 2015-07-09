@@ -7,12 +7,13 @@ var dict = {};
 $('#login_form').submit(function()
 {
     username = $('#username').val();
-    //fullname = $('#fullname').val();
+    fullname = $('#fullname').val();
     if (username !== "")
     {
         socket.emit('login', username);
         $('.ui.modal').modal('hide');
-        $('#welcome_username').text(username);
+        $('#welcome_username').text(fullname);
+        $('#important').text('@' + username);
     }
     return false;
 });
