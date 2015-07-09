@@ -92,8 +92,8 @@ function user_clicked(username)
     // alert('user clicked')
     $('.active').removeClass('active');
     $('#' + username).addClass('active');
-    addMessagesList(dict[username]);
     target_user = username;
+    addMessagesList(dict[username]);
     socket.emit('question online', username);
     $('#' + username).html(username);
     $('#chat_with').text(username);
