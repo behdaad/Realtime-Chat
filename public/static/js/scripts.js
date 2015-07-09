@@ -1,7 +1,7 @@
 var socket = io();
 var username;
-var message_target;
-var target_user_is_online;
+var target_user; // username of the user whose chat window is open
+var target_user_is_online; // shows whether "target_user" is online or not. true/false
 var dict = {};
 
 $('#login_form').submit(function()
@@ -39,7 +39,7 @@ socket.on('friends', function(friends) // friend[0]: username, friend[1]: is_onl
                 text: f[0],
                 id: f[0],
                 class: "online item",
-                onclick: "user_clicked('" + f[0] + "')"
+                onclick: "ed('" + f[0] + "')"
             }));
         }
         else
@@ -49,7 +49,7 @@ socket.on('friends', function(friends) // friend[0]: username, friend[1]: is_onl
                 text: f[0],
                 id: f[0],
                 class: "offline item",
-                onclick: "user_clicked('" + f[0] + "')"
+                onclick: "ed('" + f[0] + "')"
             }));
         }
     }
@@ -72,7 +72,7 @@ socket.on('is online', function(is_online, username)
             text: username,
             id: username,
             class: "online item",
-            onclick: "user_clicked('" + username + "')"
+            onclick: "ed('" + username + "')"
         }));
     }
     else
@@ -82,31 +82,38 @@ socket.on('is online', function(is_online, username)
             text: username,
             id: username,
             class: "offline item",
-            onclick: "user_clicked('" + username + "')"
+            onclick: "ed('" + username + "')"
         }));
     }
 });
 
 function user_clicked(username)
 {
-    console.log('user clicked');
+    // console.log('user clicked');
     $('.active').removeClass('active');
     $('#' + username).addClass('active');
     addMessagesList(dict[username]);
     target_user = username;
     socket.emit('question online', username);
-
+    $('#' + username).html(username);
+    $('#chat_with').text(username);
 }
 
 socket.on('answer online', function(username, is_online)
 {
     if (username === target_user)
-    target_user_is_online = is_online;
+        target_user_is_online = is_online;
 
     if (is_online === false)
-    $('#message_input').prop('disabled', true);
+    {
+        $('#message_input').prop('disabled', true);
+        $('chat_online').text('Offline');
+    }
     else
-    $('#message_input').prop('disabled', false);
+    {
+        $('#message_input').prop('disabled', false);
+        $('chat_online').text('Online');
+    }
 });
 
 $('#send_button').click(function()
@@ -118,13 +125,14 @@ $('#messages_form').submit(function()
 {
     // console.log("form submitted");
     var message = $('#message_input').val();
-    socket.emit('chat message', $('#message_input').val());
+    socket.emit('chat message', username, target_user, $('#message_input').val());
     $('#message_input').val('');
     addComment(username, message);
     return false;
 });
 
 socket.on('chat message', function(sender, message)
+
 {
     //dict[message.username].push(message);
     if(sender === target_user ) {
@@ -160,7 +168,11 @@ socket.on('chat message', function(sender, message)
       dict[sender].push(newMessage);
     }
     // $('#messages').append($('<li>').text(message));
-    alert('chat message received' + message);
+});
+
+socket.on('Error', function(error_message)
+{
+    alert(error_message);
 });
 
 //Written By Shaghayegh
@@ -207,7 +219,7 @@ function addComment(username, message) {
         '</span>' +
         '</div>' +
         '<div class="text">' +
-        newMessage.getMessageString()+
+        newMessage.getMessageString() +
         '</div>' +
         '</div>' +
         '</div>'
@@ -263,5 +275,22 @@ var Message = function(username, messageTime, messageString) {
 
     this.getMessageString = function () {
         return this.messageString;
+    }
+}
+
+// Written by BEHDAD >:p
+function notify(username)
+{
+    var target = $('#' + username);
+    if (target.html() === username)
+    {
+        target.append('<div id="' + username + '_notify" class="ui blue label">1</div>');
+    }
+    else
+    {
+        var notifs_count_str = $('#' + username + '_notify').text();
+        var notifs_count = parseInt(notifs_count_str) + 1;
+        // notifs_count_str = '' + notifs_count;
+        $('#' + username + '_notify').text('' + notifs_count);
     }
 }

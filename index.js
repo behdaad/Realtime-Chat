@@ -75,22 +75,33 @@ io.on('connection', function(socket)
         var addee_user = find_user(addee, users);
 
         if (addee_user !== null && !already_added(adder_user, addee_user))
+        {
             adder_user.friends.push(addee_user);
-
-        socket.emit('is online', addee_user.is_online, addee_user.username)
+            socket.emit('is online', addee_user.is_online, addee_user.username);
+        }
+        else
+        {
+            socket.emit('Error', 'Error adding user.');
+        }
     });
 
     socket.on('question online', function(username)
     {
+        // console.log('question online');
         user = find_user(username, users);
         if (user !== null)
             socket.emit('answer online', username, user.is_online);
     });
 
-    socket.on('chat message', function(message)
+    socket.on('chat message', function(user, target, message)
     {
         // socket.emit('chat message', message);
+        // console.log(user);
+        // console.log(target);
         // console.log(message);
+
+        var target_user = find_user(target, users);
+        target_user.socket.emit('chat message', user, message);
     });
 
     socket.on('disconnect', function()
