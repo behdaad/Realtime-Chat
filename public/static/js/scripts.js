@@ -166,6 +166,7 @@ socket.on('chat message', function(sender, message)
       " at " + curr_hour + ":" + min + a_p;
       var newMessage = new Message(sender, messageTime, message);
       dict[sender].push(newMessage);
+      notify(sender);
     }
     // $('#messages').append($('<li>').text(message));
 });
@@ -211,15 +212,15 @@ function addComment(username, message) {
         '</a>' +
         '<div class="content">' +
         '<a class="author">' +
-        newMessage.getUsername() +
+        newMessage.username +
         '</a>' +
         '<div class="metadata">' +
         '<span class="date">' +
-        newMessage.getDateAndTime() +
+        newMessage.messageTime +
         '</span>' +
         '</div>' +
         '<div class="text">' +
-        newMessage.getMessageString() +
+        newMessage.messageString +
         '</div>' +
         '</div>' +
         '</div>'
@@ -243,15 +244,15 @@ function addMessagesList(messagesList) {
             '</a>' +
             '<div class="content">' +
             '<a class="author">' +
-            messagesList[index].getUsername() +
+            messagesList[index].username +
             '</a>' +
             '<div class="metadata">' +
             '<span class="date">' +
-            messagesList[index].getDateAndTime() +
+            messagesList[index].messageTime +
             '</span>' +
             '</div>' +
             '<div class="text">' +
-            messagesList[index].getMessageString() +
+            messagesList[index].messageString +
             '</div>' +
             '</div>' +
             '</div>'
@@ -264,18 +265,6 @@ var Message = function(username, messageTime, messageString) {
     this.username = username;
     this.messageTime = messageTime;
     this.messageString = messageString;
-
-    this.getUsername = function () {
-        return this.username;
-    }
-
-    this.getDateAndTime = function () {
-        return this.messageTime;
-    }
-
-    this.getMessageString = function () {
-        return this.messageString;
-    }
 }
 
 // Written by BEHDAD >:p
